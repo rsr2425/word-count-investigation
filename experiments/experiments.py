@@ -1,8 +1,8 @@
 from langchain_openai import ChatOpenAI
 
-from external_logging import log_dataset_to_wandb
-from metrics import metric_fn_mapping
-from tasks import summarize
+from .external_logging import log_dataset_to_wandb
+from .metrics import metric_fn_mapping
+from .tasks import summarize
 
 
 def gen_run_name():
@@ -51,12 +51,14 @@ def run_experiment(
         word_count_target=None,
         subset_size=None,
         otherinstructions=None,
-        log_to_wandb=None
+        log_to_wandb=None,
+        project_name="word-count-investigation",
+        run_prefix=""
 ):
       llm = ChatOpenAI(model_name=model_name, temperature=temperature)
       if subset_size is not None:
         dataset = dataset.select(range(subset_size))
       results_subset = process_dataset(dataset, llm, number_of_questions, metrics, word_count_target=word_count_target, otherinstructions=otherinstructions)
       if log_to_wandb is not None and log_to_wandb:
-        log_dataset_to_wandb(results_subset, PROJECT_NAME, f"{RUN_PREFIX}{model_name}")
+        log_dataset_to_wandb(results_subset, project_name, f"{run_prefix}{model_name}")
       return results_subset
