@@ -11,8 +11,10 @@ def count_words(text: str) -> int:
         text: The input text to count words in
         
     Returns:
-        The number of words in the text
+        The number of words in the text. Returns 0 for empty string or whitespace.
     """
+    if not text or text.isspace():
+        return 0  # Return 0 for empty string or whitespace
     return len(text.split())
 
 
@@ -49,7 +51,17 @@ class WordCountControlRunnable(Runnable):
         return count_words(text)
     
     def _is_within_tolerance(self, text: str) -> bool:
-        """Check if the word count of text is within tolerance of target."""
+        """Check if the word count of text is within tolerance of target.
+        
+        Args:
+            text: The text to check word count for
+            
+        Returns:
+            True if the word count is within tolerance of the target, False otherwise
+        """
+        if not text:
+            return False
+            
         word_count = self._count_words(text)
         return abs(word_count - self.word_count_target) <= self.tolerance
     
